@@ -21,8 +21,8 @@ Run CLIs as `python -m release_benchmark.cli.<command>` from any working directo
 ## Key Features
 
 - **7 datasets**: CelebA, UTKFace, FairFace, FACET, Waterbirds, HAM10000, Fitzpatrick17k
-- **18+ bias mitigation methods**: ERM, GroupDRO, LAFTR, DFR, FairMixup, CLIP-based, OxonFair, and more
-- **10 LVLMs**: Qwen2.5-VL, LLaMA 3.2/4, Gemma 3, LLaVA-NeXT — local **transformers** or **OpenAI-compatible gateway** (vLLM, TGI, …)
+- **Multiple bias mitigation methods**: ERM, GroupDRO, LAFTR, DFR, FairMixup, CLIP-based, OxonFair, and more
+- **LVLMs**: Qwen2.5-VL, LLaMA 3.2/4, Gemma 3, LLaVA-NeXT — local **transformers** or **OpenAI-compatible gateway**
 - **Standardized metrics**: Accuracy, AUC, DP, EqOpp, EqOdd, worst-group accuracy, accuracy gap
 ## Dataset Setup
 
@@ -84,7 +84,7 @@ python -m release_benchmark.cli.zeroshot \
   --dataset waterbirds --method blip2 --bs 32 --gpu 0
 
 python -m release_benchmark.cli.zeroshot \
-  --dataset celeba --method clip --model resnet --sa sex --ta 33 --bs 32 --gpu 0
+  --dataset celeba --method clip --model vitb16 --sa sex --ta 33 --bs 32 --gpu 0
 ```
 
 ### Sweep (Hyperparameter Search via W&B)
