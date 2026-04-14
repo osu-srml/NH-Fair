@@ -37,6 +37,9 @@ parameters:
   seed:
     values:
     - 42
+  model:
+    values:
+    - vitb16
   use_clip:
     values:
     - 1
