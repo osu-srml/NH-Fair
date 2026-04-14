@@ -1,0 +1,15 @@
+numpy
+pandas
+pyyaml
+torch
+torchvision
+scikit-learn
+scipy
+tqdm
+wandb
+Pillow
+pytz
+
+# Optional: LLM evaluation
+# transformers
+# vllm

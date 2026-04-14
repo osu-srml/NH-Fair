@@ -1,0 +1,8 @@
+datasets:
+  - celeba
+  - facet
+  - fairface
+  - utk
+  - waterbirds
+  - ham
+  - fitz

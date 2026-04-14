@@ -1,0 +1,44 @@
+program: python -m release_benchmark.cli.train
+command:
+- ${env}
+- python
+- -m
+- release_benchmark.cli.train
+- ${args}
+- --method
+- decoupled
+method: grid
+metric:
+  name: Validation loss
+  goal: minimize
+parameters:
+  lr:
+    values:
+    - 1e-3
+    - 5e-3
+    - 1e-4
+    - 5e-4
+  weight_decay:
+    values:
+    - 1e-4
+    - 1e-3
+    - 1e-5
+  bs:
+    values:
+    - 256
+  epochs:
+    values:
+    - 100
+  optim:
+    values:
+    - adam
+    - sgd
+  pretrain:
+    values:
+    - 1
+  augment:
+    values:
+    - weak
+  seed:
+    values:
+    - 42

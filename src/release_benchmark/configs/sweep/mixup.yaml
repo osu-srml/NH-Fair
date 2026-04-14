@@ -1,0 +1,54 @@
+program: python -m release_benchmark.cli.train
+command:
+- ${env}
+- python
+- -m
+- release_benchmark.cli.train
+- ${args}
+- --method
+- mixup
+method: bayes
+metric:
+  name: Validation loss
+  goal: minimize
+parameters:
+  lr:
+    distribution: log_uniform_values
+    min: 1e-5
+    max: 1e-2
+  weight_decay:
+    values:
+    - 0.0
+    - 1e-5
+    - 1e-4
+    - 1e-3
+    - 1e-2
+  bs:
+    values:
+    - 256
+  epochs:
+    values:
+    - 30
+  optim:
+    values:
+    - adam
+    - sgd
+  pretrain:
+    values:
+    - 1
+  augment:
+    values:
+    - weak
+  seed:
+    values:
+    - 42
+  mixup_lam:
+    distribution: uniform
+    min: 0.1
+    max: 10
+  mixup_alpha:
+    values:
+    - 1.0
+  mixup_mode:
+    values:
+    - group

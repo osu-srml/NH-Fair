@@ -1,0 +1,117 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nh-fair"
+version = "1.0.0"
+description = "NH-Fair: Benchmarking Bias Mitigation Toward Fairness Without Harm from Vision to LVLMs"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  # LAVIS pins opencv-python-headless 4.5.x, built against NumPy 1.x; NumPy 2 breaks cv2 import.
+  "numpy>=1.23.0,<2",
+  "pandas",
+  "pyyaml",
+  # CUDA wheels on Linux/Windows via [[tool.uv.index]] + [tool.uv.sources]; CPU on macOS.
+  "torch>=2.2.0,<2.9.0",
+  "torchvision>=0.17.0,<0.24.0",
+  "scikit-learn",
+  "scipy",
+  "tqdm",
+  "wandb",
+  "Pillow",
+  "pytz",
+]
+
+# salesforce-lavis 1.0.2 requires transformers>=4.25,<4.27 (PyPI metadata), which conflicts
+# with modern LVLMs (Qwen2.5-VL, LLaMA 4, etc.) in the `llm` extra — use one stack per env.
+[project.optional-dependencies]
+lavis = ["salesforce-lavis==1.0.2"]
+llm = ["transformers>=4.48.0", "accelerate", "vllm"]
+all = ["transformers>=4.48.0", "accelerate", "vllm", "openai"]
+dev = ["pytest>=7"]
+
+[tool.uv]
+conflicts = [
+  [{ extra = "lavis" }, { extra = "llm" }],
+  [{ extra = "lavis" }, { extra = "all" }],
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", marker = "sys_platform == 'darwin'" },
+  { index = "pytorch-cu126", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchvision = [
+  { index = "pytorch-cpu", marker = "sys_platform == 'darwin'" },
+  { index = "pytorch-cu126", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+
+[project.urls]
+Paper = "https://arxiv.org/abs/2602.03895"
+
+[project.scripts]
+nh-fair-train = "release_benchmark.cli.train:main"
+nh-fair-zeroshot = "release_benchmark.cli.zeroshot:main"
+nh-fair-sweep = "release_benchmark.cli.sweep:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+release_benchmark = ["configs/**/*.yaml"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+  "F",      # Pyflakes
+  "E",      # pycodestyle errors
+  "W",      # pycodestyle warnings
+  "I",      # isort (import sorting)
+  "UP",     # pyupgrade
+  "B",      # flake8-bugbear
+  "SIM",    # flake8-simplify
+  "RUF",    # Ruff-specific rules
+]
+ignore = [
+  "E501",   # line too long (handled by formatter)
+  "B905",   # zip-without-explicit-strict
+  "SIM108", # ternary operator (can reduce readability)
+  "F403",   # star imports (used by model.py pattern)
+  "F405",   # names from star imports
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["release_benchmark"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
